@@ -1,6 +1,5 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
-const SECRET_KEY = "NOTESAPI";
 
 module.exports = async (req, res, next) => {
   if (
@@ -16,7 +15,7 @@ module.exports = async (req, res, next) => {
   const accessToken = req.headers.authorization.split(" ")[1];
 
   try {
-    const decode = jwt.verify(accessToken, SECRET_KEY);
+    const decode = jwt.verify(accessToken, process.env.SECRET_KEY);
     req.userId = decode.id;
     const user = await User.findById(req.userId);
     if (!user) {

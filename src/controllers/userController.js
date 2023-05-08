@@ -1,7 +1,6 @@
 const userModel = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const SECRET_KEY = "NOTESAPI";
 
 const signUp = async (req, res) => {
   try {
@@ -24,11 +23,14 @@ const signUp = async (req, res) => {
     });
 
     //Token generation
-    const token = jwt.sign({ email: user.email, id: user._id }, SECRET_KEY);
-    res.status(201).json({ user: user, token: token });
+    const token = jwt.sign(
+      { email: user.email, id: user._id },
+      process.env.SECRET_KEY
+    );
+    return res.status(201).json({ user: user, token: token });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: "Something went wrong" });
+    return res.status(500).json({ message: "Something went wrong" });
   }
 };
 
@@ -52,12 +54,12 @@ const signIn = async (req, res) => {
     //Token generation
     const token = jwt.sign(
       { email: existingUser.email, id: existingUser._id },
-      SECRET_KEY
+      process.env.SECRET_KEY
     );
-    res.status(201).json({ user: existingUser, token: token });
+    return res.status(200).json({ user: existingUser, token: token });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: "Something went wrong" });
+    return res.status(500).json({ message: "Something went wrong" });
   }
 };
 
